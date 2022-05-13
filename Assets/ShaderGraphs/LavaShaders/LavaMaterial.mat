@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LavaMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: 3a608e3acf6b7a7438f60d185a765315, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - Texture2D_35490e8a61f243028b33c53c638fd1b1:
+        m_Texture: {fileID: 2800000, guid: c0cfa846b033b0c4c9c81856f53a734b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_c0d5ed32a9de4a47bd8e32e3be371612:
+        m_Texture: {fileID: 2800000, guid: 71610f3bc62fcfc4bb04f413e778e1d3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - Vector1_751ca83ccf564299947933710feb1297: 0
+    - Vector1_b33a3b32af4d41d49c4497b2c799532e: 0.5
+    - _BottomPower: 0.1
+    - _FresnelPower: 3.02
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SimpleNoiseAmount: 0.5
+    - _SimpleNoisePower: 2
+    - _SimpleNoiseScale: 50
+    - _VoronoiAmount: 0.05
+    - _VoronoiAngleOffset: 0.5
+    - _VoronoiScale: 15
+    m_Colors:
+    - Color_664b8eaac283418a967a34bc3ace4573: {r: 4, g: 1.6313726, b: 0.17254902, a: 0.5019608}
+    - Vector2_1ddbd34662cc45aaa7ec388c17df12ea: {r: 5, g: 1, b: 0, a: 0}
+    - Vector2_2c1f362e402d46a0a1f36782172c9bd2: {r: 0, g: 0.01, b: 0, a: 0}
+    - Vector2_623f8ce604154af2ad920a778240a118: {r: 0, g: 0.005, b: 0, a: 0}
+    - _BottomRemap: {r: 0, g: 8.97, b: 0, a: 0}
+    - _FresnelColor: {r: 47.937256, g: 0, b: 0, a: 0.5019608}
+    - _LavaRemap: {r: 0, g: 0.23, b: 0, a: 0}
+    - _SimpleNoiseSpeed: {r: 0, g: 0.5, b: 0, a: 0}
+    - _VoronoiSpeed: {r: 0, g: 0.005, b: 0, a: 0}
+  m_BuildTextureStacks: []
+--- !u!114 &3222245814425128866
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
