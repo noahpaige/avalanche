@@ -13,19 +13,19 @@ Shader "Unlit/LavaSurface"
 		_MainTex("Main Texture", 2D) = "white" {}
 		_DistortStrength("Distort Strength", float) = 1.0
 		_ExtraHeight("Extra Height", float) = 0.0
+		_EdgeThreshold("Edge Detect Threshold", Range (0,1)) = 0.95
+		_DistortX ("Distortion in X", Range (0,2)) = 1
+		_DistortY ("Distortion in Y", Range (0,2)) = 0
 	}
 
 	SubShader
 	{
         Tags
 		{ 
-			"RenderType"="Transparent" "IgnoreProjector"="True" "Queue" = "Transparent" 
+			  "RenderType" = "Transparent" "Queue" = "Transparent" 
 		}
-
 		Pass
 		{
-            Blend SrcAlpha OneMinusSrcAlpha
-			LOD 100
 
 			CGPROGRAM
             #include "UnityCG.cginc"
@@ -40,15 +40,21 @@ Shader "Unlit/LavaSurface"
 			float  _WaveSpeed;
 			float  _WaveAmp;
 			float _ExtraHeight;
+			float _EdgeThreshold;
+
 			sampler2D _CameraDepthTexture;
 			sampler2D _DepthRampTex;
 			sampler2D _NoiseTex;
 			sampler2D _MainTex;
 
+			fixed _DistortX;
+			fixed _DistortY;
+
 			struct vertexInput
 			{
-				float4 vertex : POSITION;
+				float4 pos : POSITION;
 				float4 texCoord : TEXCOORD1;
+				half3 normal : NORMAL;
 			};
 
 			struct vertexOutput
@@ -63,7 +69,7 @@ Shader "Unlit/LavaSurface"
 				vertexOutput output;
 
 				// convert to world space
-				output.pos = UnityObjectToClipPos(input.vertex);
+				output.pos = UnityObjectToClipPos(input.pos);
 
 				// apply wave animation
 				float noiseSample = tex2Dlod(_NoiseTex, float4(input.texCoord.xy, 0, 0));
@@ -75,7 +81,7 @@ Shader "Unlit/LavaSurface"
 
 				// texture coordinates 
 				output.texCoord = input.texCoord;
-
+				
 				return output;
 			}
 
@@ -90,9 +96,23 @@ Shader "Unlit/LavaSurface"
 				float4 foamRamp = float4(tex2D(_DepthRampTex, float2(foamLine, 0.5)).rgb, 1.0);
 
 				// sample main texture
-				float4 albedo = tex2D(_MainTex, input.texCoord.xy);
+				//float4 albedo = tex2D(_MainTex, input.texCoord.xy); //use if adding a main lava tex
 
-			    float4 col = _Color * foamRamp;// * albedo;
+				//float4 col = _Color  + (foamLine * _EdgeColor); //used for orange to yellow foam effect
+				float xCoord = input.texCoord.x;
+				float yCoord = input.texCoord.y;
+				float edgeFactor = 1 - _EdgeThreshold;
+				if(xCoord > _EdgeThreshold) {
+					foamLine += (xCoord/edgeFactor) - (_EdgeThreshold/edgeFactor);
+				} else if(xCoord < 0.05) {
+					foamLine += (xCoord/-edgeFactor) + 1;
+				} if(yCoord > 0.95) {
+					foamLine += (yCoord/edgeFactor) - (_EdgeThreshold/edgeFactor);
+				} else if(yCoord < 0.05) {
+					foamLine += (yCoord/-edgeFactor) + 1;
+				}
+				float4 col = float4(foamLine,0,0, 1);
+
                 return col;
 			}
 
