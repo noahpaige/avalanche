@@ -62,7 +62,7 @@ Category {
 				fixed4 tex2 = tex2D(_LavaTex, fixed2(i.texcoord1.x-distort*_DistortX,i.texcoord1.y-distort*_DistortY));
 				tex = lerp(tex2,tex,tex.a);
 
-				return tex;
+				return tex2;
 			}
 			ENDCG 
 		}

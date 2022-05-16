@@ -21,13 +21,17 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _DepthRampTex:
-        m_Texture: {fileID: 2800000, guid: 9afdcd66e3cde0348bebd37626739ec7, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2b2b71e451727ca4bac791c45c60edb0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _LavaTex:
+        m_Texture: {fileID: 2800000, guid: ca0fa624c984fd340838e6b150fe13fa, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 7.013023, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 93a726948508cc14eab67fb1abe2daa8, type: 3}
+        m_Texture: {fileID: 2800000, guid: ca0fa624c984fd340838e6b150fe13fa, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Offset: {x: 9.531516, y: 0}
     - _NoiseTex:
         m_Texture: {fileID: 2800000, guid: 9d69aab3dec77fe42aa2d1dba91290b6, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -36,9 +40,9 @@ Material:
     m_Floats:
     - _DepthFactor: 1.7
     - _DistortStrength: 1
-    - _DistortX: 1
-    - _DistortY: 0
-    - _EdgeThreshold: 0.95
+    - _DistortX: 0.58
+    - _DistortY: 0.74
+    - _EdgeThreshold: 0.812
     - _ExtraHeight: 0
     - _FresnelBias: 0
     - _FresnelPower: 1.2
