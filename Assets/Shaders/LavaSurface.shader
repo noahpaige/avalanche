@@ -16,6 +16,9 @@ Shader "Unlit/LavaSurface"
 		_EdgeThreshold("Edge Detect Threshold", Range (0,1)) = 0.95
 		_DistortX ("Distortion in X", Range (0,2)) = 1
 		_DistortY ("Distortion in Y", Range (0,2)) = 0
+		radius ("Radius", Range(0,50)) = 15
+        resolution ("Resolution", float) = 800  
+        vstep("VerticalStep", Range(0,1)) = 0.5  
 	}
 
 	SubShader
@@ -68,6 +71,22 @@ Shader "Unlit/LavaSurface"
 				float noiseSample : FLOAT;
 			};
 
+			float radius;
+            float resolution;
+
+            //the direction of our blur
+            //hstep (1.0, 0.0) -> x-axis blur
+            //vstep(0.0, 1.0) -> y-axis blur
+            //for example horizontaly blur equal:
+            //float hstep = 1;
+            //float vstep = 0;
+            //float hstep;
+            float vstep;
+
+			const uint samples = 9;
+			static float blurFactors[9] = {0.0162162162, 0.054054054, 0.1216216216, 0.1945945946,
+				0.2270270270, 0.1945945946, 0.1216216216, 0.0540540541, 0.0162162162};
+
 			vertexOutput vert(vertexInput input)
 			{
 				vertexOutput output;
@@ -92,31 +111,47 @@ Shader "Unlit/LavaSurface"
 
 			fixed4 frag(vertexOutput input) : SV_TARGET
 			{
-				// apply depth texture
-				float4 depthSample = SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, input.screenPos);
-				float depth = LinearEyeDepth(depthSample).r;
-
-				// create foamline
-				float foamLine = 1 - saturate(_DepthFactor * (depth - input.screenPos.w));
-				float4 foamRamp = float4(tex2D(_DepthRampTex, float2(foamLine, 0.5)).rgb, 1.0);
+				
 				float distort = 0;
+				float sum = 0;
+				float yCoord;
+                
+				float4 screenPos;
+				float4 depthSample;
+				float depth, foamLine;
 
-				float xCoord = input.texCoord.x;
-				float yCoord = input.texCoord.y;
-				float edgeFactor = 1 - _EdgeThreshold;
-				if(yCoord > _EdgeThreshold) {
-					distort += ((yCoord/edgeFactor) - (_EdgeThreshold/edgeFactor));//foamRamp.r;
-				} else if(yCoord < (1-_EdgeThreshold)) {
-					distort += ((yCoord/-edgeFactor) + 1);// foamRamp.r;
-				} else {
-					distort = foamLine;
+				//blur radius in pixels
+                float blur = radius/resolution/4;
+
+				for(int i=-4; i<5; i++) {
+					yCoord = input.texCoord.y - (i*blur*vstep);
+					float edgeFactor = 1 - _EdgeThreshold;
+					if(yCoord > _EdgeThreshold) {
+						distort = ((yCoord/edgeFactor) - (_EdgeThreshold/edgeFactor));
+						//sum += (distort*blurFactors[i+4]*0.5);
+					} else if(yCoord < (1-_EdgeThreshold)) {
+						distort = ((yCoord/-edgeFactor) + 1);
+						// += (distort*blurFactors[i+4]*0.5);
+					} else {
+						// apply depth texture
+						screenPos = float4(input.screenPos.x+(i*blurFactors[i+4]*0.25), input.screenPos.y+(i*blurFactors[i+4]*0.25), input.screenPos.z, input.screenPos.w);
+						depthSample = SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, screenPos);
+						depth = LinearEyeDepth(depthSample).r;
+
+						// create foamline
+						foamLine = 1 - saturate(_DepthFactor * (depth - input.screenPos.w));
+						//float4 foamRamp = float4(tex2D(_DepthRampTex, float2(foamLine, 0.5)).rgb, 1.0);
+						distort = foamLine;
+						//sum+=distort;
+					}
+					sum += (distort*blurFactors[i+4]*0.5);
+
 				}
-				distort *= input.noiseSample;
-				float4 col = float4(distort,distort,distort, 1);
+
+				float4 col = float4(sum,0,0, 1);
 
 				// sample main texture
-				fixed4 albedo = tex2D(_LavaTex, fixed2(input.texCoord.x-distort*_DistortX, input.texCoord.y-distort*_DistortY)); //use if adding a main lava tex
-
+				fixed4 albedo = tex2D(_LavaTex, fixed2(input.texCoord.x-sum*_DistortX, input.texCoord.y-sum*_DistortY)); //use if adding a main lava tex
 
                 return albedo;
 			}

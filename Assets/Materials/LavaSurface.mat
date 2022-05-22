@@ -40,9 +40,9 @@ Material:
     m_Floats:
     - _DepthFactor: 1.7
     - _DistortStrength: 1
-    - _DistortX: 0.58
-    - _DistortY: 0.74
-    - _EdgeThreshold: 0.812
+    - _DistortX: 1
+    - _DistortY: 0
+    - _EdgeThreshold: 0.8
     - _ExtraHeight: 0
     - _FresnelBias: 0
     - _FresnelPower: 1.2
