@@ -38,17 +38,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DepthFactor: 1.7
+    - _BlurSize: 0.1
+    - _DepthFactor: 0.5
     - _DistortStrength: 1
     - _DistortX: 1
-    - _DistortY: 0
+    - _DistortY: 1
     - _EdgeThreshold: 0.8
     - _ExtraHeight: 0
     - _FresnelBias: 0
     - _FresnelPower: 1.2
     - _FresnelScale: 1
+    - _StandardDeviation: 0.0119
     - _WaveAmp: 0.5
     - _WaveSpeed: 2
+    - radius: 50
+    - resolution: 800
+    - vstep: 1
     m_Colors:
     - _Color: {r: 1, g: 0.44080988, b: 0, a: 1}
     - _EdgeColor: {r: 1, g: 0.7019608, b: 0, a: 1}

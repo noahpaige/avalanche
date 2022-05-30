@@ -3,22 +3,18 @@ Shader "Unlit/LavaSurface"
 
    Properties
 	{
-		_Color("Color", Color) = (1, 1, 1, 1)
-		_EdgeColor("Edge Color", Color) = (1, 1, 1, 1)
 		_DepthFactor("Depth Factor", float) = 1.0
 		_WaveSpeed("Wave Speed", float) = 1.0
 		_WaveAmp("Wave Amp", float) = 0.2
-		_DepthRampTex("Depth Ramp", 2D) = "white" {}
 		_NoiseTex("Noise Texture", 2D) = "white" {}
 		_LavaTex("Lava Texture", 2D) = "white" {}
-		_DistortStrength("Distort Strength", float) = 1.0
 		_ExtraHeight("Extra Height", float) = 0.0
 		_EdgeThreshold("Edge Detect Threshold", Range (0,1)) = 0.95
 		_DistortX ("Distortion in X", Range (0,2)) = 1
 		_DistortY ("Distortion in Y", Range (0,2)) = 0
-		radius ("Radius", Range(0,50)) = 15
-        resolution ("Resolution", float) = 800  
-        vstep("VerticalStep", Range(0,1)) = 0.5  
+		_Radius ("Radius", Range(0,50)) = 15
+        _Resolution ("Resolution", float) = 800  
+        _VStep("VerticalStep", Range(0,1)) = 0.5  
 	}
 
 	SubShader
@@ -38,8 +34,6 @@ Shader "Unlit/LavaSurface"
 			#pragma fragment frag
 			
 			// Properties
-			float4 _Color;
-			float4 _EdgeColor;
 			float  _DepthFactor;
 			float  _WaveSpeed;
 			float  _WaveAmp;
@@ -71,8 +65,8 @@ Shader "Unlit/LavaSurface"
 				float noiseSample : FLOAT;
 			};
 
-			float radius;
-            float resolution;
+			float _Radius;
+            float _Resolution;
 
             //the direction of our blur
             //hstep (1.0, 0.0) -> x-axis blur
@@ -81,7 +75,7 @@ Shader "Unlit/LavaSurface"
             //float hstep = 1;
             //float vstep = 0;
             //float hstep;
-            float vstep;
+            float _VStep;
 
 			const uint samples = 9;
 			static float blurFactors[9] = {0.0162162162, 0.054054054, 0.1216216216, 0.1945945946,
@@ -121,17 +115,17 @@ Shader "Unlit/LavaSurface"
 				float depth, foamLine;
 
 				//blur radius in pixels
-                float blur = radius/resolution/4;
+                float blur = _Radius/_Resolution/4;
 
 				for(int i=-4; i<5; i++) {
-					yCoord = input.texCoord.y - (i*blur*vstep);
+					yCoord = input.texCoord.y - (i*blur*_VStep);
 					float edgeFactor = 1 - _EdgeThreshold;
 					if(yCoord > _EdgeThreshold) {
 						distort = ((yCoord/edgeFactor) - (_EdgeThreshold/edgeFactor));
-						//sum += (distort*blurFactors[i+4]*0.5);
+						sum += (distort*blurFactors[i+4]*0.5);
 					} else if(yCoord < (1-_EdgeThreshold)) {
 						distort = ((yCoord/-edgeFactor) + 1);
-						// += (distort*blurFactors[i+4]*0.5);
+						sum += (distort*blurFactors[i+4]*0.5);
 					} else {
 						// apply depth texture
 						screenPos = float4(input.screenPos.x+(i*blurFactors[i+4]*0.25), input.screenPos.y+(i*blurFactors[i+4]*0.25), input.screenPos.z, input.screenPos.w);
@@ -140,11 +134,10 @@ Shader "Unlit/LavaSurface"
 
 						// create foamline
 						foamLine = 1 - saturate(_DepthFactor * (depth - input.screenPos.w));
-						//float4 foamRamp = float4(tex2D(_DepthRampTex, float2(foamLine, 0.5)).rgb, 1.0);
 						distort = foamLine;
-						//sum+=distort;
+						sum += (distort*blurFactors[i+4]*0.25);
+
 					}
-					sum += (distort*blurFactors[i+4]*0.5);
 
 				}
 
